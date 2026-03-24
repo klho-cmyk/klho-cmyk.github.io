@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Number Draw Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(145deg, #1e2b3c 0%, #0f1a24 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            max-width: 550px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .header {
+            background: #ff9800;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 2px 2px 0 #b45f06;
+            font-weight: 800;
+        }
+
+        .content {
+            padding: 1.8rem 2rem 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.8rem;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            width: 110px;
+            font-size: 1rem;
+        }
+
+        .range-box {
+            display: flex;
+            gap: 0.8rem;
+            flex: 1;
+        }
+
+        .range-box input {
+            width: 80px;
+            text-align: center;
+        }
+
+        input, .exclude-input {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 1.5rem;
+            font-size: 1rem;
+            transition: 0.2s;
+            background: #f8fafc;
+        }
+
+        input:focus, .exclude-input:focus {
+            outline: none;
+            border-color: #ff9800;
+            background: #fff;
+        }
+
+        .exclude-input {
+            width: 100%;
+        }
+
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f1f5f9;
+            padding: 0.8rem 1.2rem;
+            border-radius: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .toggle-label {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #ff9800;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background: #fff3e0;
+            padding: 0.8rem 1.2rem;
+            border-radius: 1.8rem;
+            margin-bottom: 1.8rem;
+            font-weight: 600;
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #e67e22;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #5a6e7c;
+            letter-spacing: 1px;
+        }
+
+        .draw-btn {
+            width: 100%;
+            background: linear-gradient(95deg, #ff9800, #f57c00);
+            border: none;
+            padding: 1rem;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: white;
+            border-radius: 3rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            margin-bottom: 1.5rem;
+        }
+
+        .draw-btn:hover {
+            transform: scale(0.98);
+            background: linear-gradient(95deg, #f57c00, #ff9800);
+        }
+
+        .draw-btn:active {
+            transform: scale(0.96);
+        }
+
+        .result-area {
+            background: #f1f5f9;
+            border-radius: 1.5rem;
+            padding: 1rem;
+            min-height: 80px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #0f172a;
+            word-break: break-word;
+        }
+
+        .history-title {
+            font-size: 0.85rem;
+            color: #5a6e7c;
+            margin-bottom: 6px;
+        }
+
+        .result-numbers {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #e67e22;
+        }
+
+        hr {
+            margin: 1rem 0;
+            border-color: #e2e8f0;
+        }
+
+        @media (max-width: 500px) {
+            .content {
+                padding: 1.2rem;
+            }
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .input-group label {
+                width: auto;
+            }
+            .range-box {
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="header">
+        <h1>DRAW</h1>
+    </div>
+    <div class="content">
+        <!-- Number Range -->
+        <div class="input-group">
+            <label>Number Range</label>
+            <div class="range-box">
+                <input type="number" id="minNum" value="1" step="1" min="1">
+                <span style="font-weight:bold">—</span>
+                <input type="number" id="maxNum" value="100" step="1" min="1">
+            </div>
+        </div>
+
+        <!-- Draw Count -->
+        <div class="input-group">
+            <label>Draw Count</label>
+            <input type="number" id="drawCount" value="1" step="1" min="1">
+        </div>
+
+        <!-- Exclude Numbers -->
+        <div class="input-group">
+            <label>Exclude Numbers</label>
+            <input type="text" id="excludeNums" class="exclude-input" placeholder="e.g., 1, 13, 50">
+        </div>
+
+        <!-- No-Repeat Mode Toggle -->
+        <div class="toggle-group">
+            <span class="toggle-label">No-Repeat Mode</span>
+            <label class="switch">
+                <input type="checkbox" id="uniqueMode">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats" id="statsPanel">
+            <div class="stat-item">
+                <div class="stat-value" id="drawnTotal">0</div>
+                <div class="stat-label">Total Drawn</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="remainingCount">—</div>
+                <div class="stat-label">Remaining</div>
+            </div>
+        </div>
+
+        <!-- Draw Button -->
+        <button class="draw-btn" id="drawBtn">🎲 DRAW 🎲</button>
+
+        <!-- Result Display -->
+        <div class="result-area">
+            <div class="history-title">📌 Draw Result</div>
+            <div id="resultDisplay" class="result-numbers">Ready to draw...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------- DOM Elements ----------
+    const minInput = document.getElementById('minNum');
+    const maxInput = document.getElementById('maxNum');
+    const drawCountInput = document.getElementById('drawCount');
+    const excludeInput = document.getElementById('excludeNums');
+    const uniqueModeCheck = document.getElementById('uniqueMode');
+    const drawBtn = document.getElementById('drawBtn');
+    const drawnTotalSpan = document.getElementById('drawnTotal');
+    const remainingSpan = document.getElementById('remainingCount');
+    const resultDisplay = document.getElementById('resultDisplay');
+
+    // ---------- State ----------
+    let drawnNumbers = [];
+    let lastDrawResult = [];
+
+    function getExcludedSet() {
+        let raw = excludeInput.value.trim();
+        if (raw === "") return new Set();
+        let parts = raw.split(/[ ,，]+/);
+        let set = new Set();
+        for (let p of parts) {
+            let num = parseInt(p, 10);
+            if (!isNaN(num)) {
+                set.add(num);
+            }
+        }
+        return set;
+    }
+
+    function getValidNumbers() {
+        let min = parseInt(minInput.value, 10);
+        let max = parseInt(maxInput.value, 10);
+        if (isNaN(min)) min = 1;
+        if (isNaN(max)) max = 100;
+        if (min > max) { [min, max] = [max, min]; }
+        const excluded = getExcludedSet();
+        let valid = [];
+        for (let i = min; i <= max; i++) {
+            if (!excluded.has(i)) valid.push(i);
+        }
+        return { valid, min, max };
+    }
+
+    function updateStats() {
+        const uniqueMode = uniqueModeCheck.checked;
+        if (!uniqueMode) {
+            drawnTotalSpan.innerText = '—';
+            remainingSpan.innerText = '—';
+            return;
+        }
+
+        const { valid } = getValidNumbers();
+        const totalValid = valid.length;
+        const drawnCount = drawnNumbers.length;
+        const remaining = totalValid - drawnCount;
+        drawnTotalSpan.innerText = drawnCount;
+        remainingSpan.innerText = remaining >= 0 ? remaining : 0;
+    }
+
+    function resetUniqueHistory() {
+        if (uniqueModeCheck.checked) {
+            drawnNumbers = [];
+            updateStats();
+        } else {
+            drawnNumbers = [];
+            updateStats();
+        }
+    }
+
+    function bindResetEvents() {
+        const elements = [minInput, maxInput, excludeInput, uniqueModeCheck];
+        elements.forEach(el => {
+            el.addEventListener('change', () => {
+                if (uniqueModeCheck.checked) {
+                    resetUniqueHistory();
+                } else {
+                    drawnNumbers = [];
+                    updateStats();
+                }
+                resultDisplay.innerHTML = "Ready to draw...";
+                lastDrawResult = [];
+            });
+        });
+    }
+
+    function performDraw() {
+        let min = parseInt(minInput.value, 10);
+        let max = parseInt(maxInput.value, 10);
+        if (isNaN(min)) min = 1;
+        if (isNaN(max)) max = 100;
+        if (min > max) { [min, max] = [max, min]; }
+        
+        let k = parseInt(drawCountInput.value, 10);
+        if (isNaN(k) || k < 1) k = 1;
+
+        const excludedSet = getExcludedSet();
+        const uniqueMode = uniqueModeCheck.checked;
+
+        let pool = [];
+        for (let i = min; i <= max; i++) {
+            if (!excludedSet.has(i)) pool.push(i);
+        }
+
+        if (pool.length === 0) {
+            resultDisplay.innerHTML = "⚠️ No numbers available (all excluded or invalid range)";
+            return;
+        }
+
+        if (uniqueMode) {
+            const drawnSet = new Set(drawnNumbers);
+            pool = pool.filter(num => !drawnSet.has(num));
+        }
+
+        if (k > pool.length) {
+            resultDisplay.innerHTML = `❌ Draw count (${k}) exceeds available numbers (${pool.length}). Adjust range, excludes, or draw count.`;
+            return;
+        }
+
+        let shuffled = [...pool];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        const selected = shuffled.slice(0, k);
+        selected.sort((a,b)=>a-b);
+
+        lastDrawResult = selected;
+        if (selected.length === 1) {
+            resultDisplay.innerHTML = `🎯 ${selected[0]}`;
+        } else {
+            resultDisplay.innerHTML = `🎯 ${selected.join(' , ')}`;
+        }
+
+        if (uniqueMode) {
+            for (let num of selected) {
+                drawnNumbers.push(num);
+            }
+            updateStats();
+        } else {
+            updateStats();
+        }
+    }
+
+    drawBtn.addEventListener('click', () => {
+        performDraw();
+    });
+
+    function init() {
+        bindResetEvents();
+        resetUniqueHistory();
+        const { valid } = getValidNumbers();
+        if (valid.length === 0) {
+            resultDisplay.innerHTML = "⚠️ No numbers available in current range (adjust excludes or range)";
+        } else {
+            resultDisplay.innerHTML = "Ready to draw...";
+        }
+        updateStats();
+    }
+
+    init();
+</script>
+</body>
+</html>
