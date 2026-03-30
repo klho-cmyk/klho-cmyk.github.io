@@ -3,253 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Number Draw Tool</title>
+    <title>Draw</title>
     <style>
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
         }
-
         body {
-            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(145deg, #1e2b3c 0%, #0f1a24 100%);
+            background: linear-gradient(145deg, #fff0e0 0%, #ffd9b5 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            margin: 0;
         }
-
         .card {
-            max-width: 550px;
+            max-width: 700px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(2px);
-            border-radius: 2rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            background: rgba(255,245,235,0.98);
+            border-radius: 48px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.1);
             overflow: hidden;
-            transition: 0.3s;
+            backdrop-filter: blur(2px);
         }
-
         .header {
-            background: #ff9800;
-            padding: 1.5rem;
+            background: #d9a066;
+            padding: 1rem 0.8rem;
             text-align: center;
+            color: #4a2c1a;
         }
-
         .header h1 {
-            font-size: 2.2rem;
-            letter-spacing: 2px;
-            color: #fff;
-            text-shadow: 2px 2px 0 #b45f06;
-            font-weight: 800;
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.6rem;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 0 4px;
         }
-
+        .header p {
+            margin: 0.5rem 0 0;
+            opacity: 0.85;
+            color: #4a2c1a;
+            font-size: 0.8rem;
+        }
+        /* 基础图片样式（适用于 capy_sleep） */
+        .header-img {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            border-radius: 12px;
+            flex-shrink: 0;
+            background-color: #d9a066;
+        }
+        /* 针对第一张图片（capy_coffee 1）单独放大，使其视觉主体与第二张一致 */
+        .header-img:first-child {
+            width: 52px;
+            height: 52px;
+            margin: -4px 0; /* 微调垂直居中 */
+            object-fit: contain;
+        }
         .content {
-            padding: 1.8rem 2rem 2rem;
+            padding: 1.5rem;
         }
-
         .input-group {
             margin-bottom: 1.5rem;
             display: flex;
             flex-wrap: wrap;
-            align-items: baseline;
             gap: 0.8rem;
+            align-items: flex-end;
         }
-
-        .input-group label {
+        .input-field {
+            flex: 1;
+            min-width: 90px;
+        }
+        .input-field label {
+            display: block;
+            font-size: 0.8rem;
             font-weight: 600;
-            color: #2c3e50;
-            width: 110px;
-            font-size: 1rem;
+            color: #8b5a2b;
+            margin-bottom: 4px;
         }
-
-        .range-box {
-            display: flex;
-            gap: 0.8rem;
-            flex: 1;
-        }
-
-        .range-box input {
-            width: 80px;
-            text-align: center;
-        }
-
-        input, .exclude-input {
-            flex: 1;
-            padding: 0.6rem 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 1.5rem;
-            font-size: 1rem;
-            transition: 0.2s;
-            background: #f8fafc;
-        }
-
-        input:focus, .exclude-input:focus {
-            outline: none;
-            border-color: #ff9800;
-            background: #fff;
-        }
-
-        .exclude-input {
+        .input-field input, .input-field textarea {
             width: 100%;
+            padding: 8px 10px;
+            border: 2px solid #e0c8a8;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            background: white;
+            color: #4a2c1a;
         }
-
-        .toggle-group {
+        .input-field input:focus, .input-field textarea:focus {
+            outline: none;
+            border-color: #d9a066;
+            box-shadow: 0 0 0 3px rgba(217,160,102,0.2);
+        }
+        .exclude-text {
+            resize: vertical;
+            font-family: monospace;
+        }
+        .checkbox-row {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            background: #f1f5f9;
-            padding: 0.8rem 1.2rem;
-            border-radius: 2rem;
-            margin-bottom: 1.5rem;
+            gap: 10px;
+            background: #fff3e6;
+            padding: 6px 12px;
+            border-radius: 40px;
+            margin-bottom: 1.2rem;
+            font-size: 0.85rem;
         }
-
-        .toggle-label {
+        .checkbox-row label {
             font-weight: 600;
-            color: #1e293b;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 52px;
-            height: 26px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
+            color: #8b5a2b;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: 0.3s;
-            border-radius: 34px;
         }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: 0.3s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: #ff9800;
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-
         .stats {
             display: flex;
+            gap: 1rem;
+            background: #fff3e6;
+            border-radius: 32px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.5rem;
             justify-content: space-between;
-            background: #fff3e0;
-            padding: 0.8rem 1.2rem;
-            border-radius: 1.8rem;
-            margin-bottom: 1.8rem;
-            font-weight: 600;
         }
-
-        .stat-item {
+        .stat {
             text-align: center;
             flex: 1;
         }
-
-        .stat-value {
+        .stat-number {
             font-size: 1.8rem;
             font-weight: 800;
-            color: #e67e22;
-            line-height: 1.2;
+            color: #b87c4a;
+            line-height: 1;
         }
-
         .stat-label {
-            font-size: 0.8rem;
-            color: #5a6e7c;
-            letter-spacing: 1px;
+            font-size: 0.7rem;
+            color: #8b5a2b;
+            font-weight: 500;
         }
-
-        .draw-btn {
-            width: 100%;
-            background: linear-gradient(95deg, #ff9800, #f57c00);
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        button {
+            flex: 1;
+            background: #d9a066;
             border: none;
-            padding: 1rem;
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: white;
-            border-radius: 3rem;
+            padding: 12px 0;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #4a2c1a;
             cursor: pointer;
             transition: 0.2s;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-
-        .draw-btn:hover {
+        button:hover {
+            background: #c28954;
             transform: scale(0.98);
-            background: linear-gradient(95deg, #f57c00, #ff9800);
         }
-
-        .draw-btn:active {
-            transform: scale(0.96);
+        .reset-btn {
+            background: #c0a080;
+            color: #4a2c1a;
         }
-
+        .reset-btn:hover {
+            background: #a88662;
+        }
         .result-area {
-            background: #f1f5f9;
-            border-radius: 1.5rem;
+            background: #fff3e6;
+            border-radius: 32px;
             padding: 1rem;
+            margin-top: 0.8rem;
+            border: 1px solid #e0c8a8;
+        }
+        .draw-result {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 16px;
+            margin-bottom: 1rem;
+            box-shadow: inset 0 1px 3px #0001, 0 2px 4px #fff9;
             min-height: 80px;
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #0f172a;
-            word-break: break-word;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
-
-        .history-title {
-            font-size: 0.85rem;
-            color: #5a6e7c;
-            margin-bottom: 6px;
-        }
-
-        .result-numbers {
+        .result-number {
+            background: #d9a066;
+            color: #4a2c1a;
             font-size: 1.5rem;
             font-weight: 800;
-            color: #e67e22;
+            padding: 8px 16px;
+            border-radius: 60px;
+            display: inline-block;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            min-width: 70px;
+            text-align: center;
         }
-
-        hr {
-            margin: 1rem 0;
-            border-color: #e2e8f0;
+        .result-number.single {
+            font-size: 2rem;
+            padding: 12px 24px;
         }
-
-        @media (max-width: 500px) {
-            .content {
-                padding: 1.2rem;
+        .history-title {
+            font-weight: 700;
+            margin: 0 0 6px 0;
+            color: #b87c4a;
+            font-size: 0.9rem;
+        }
+        .history-list {
+            background: white;
+            border-radius: 28px;
+            padding: 8px 12px;
+            min-height: 60px;
+            max-height: 120px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+        .history-badge {
+            background: #e9ecef;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #8b5a2b;
+        }
+        .error-msg {
+            color: #c7362b;
+            background: #ffe8e6;
+            padding: 6px 12px;
+            border-radius: 30px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        footer {
+            font-size: 0.65rem;
+            text-align: center;
+            color: #b87c4a;
+            margin-top: 1rem;
+        }
+        /* 手机窄屏优化 */
+        @media (max-width: 550px) {
+            .content { padding: 1rem; }
+            .header h1 {
+                font-size: 1.3rem;
+                gap: 6px;
             }
-            .input-group {
-                flex-direction: column;
-                align-items: stretch;
+            .header-img {
+                width: 36px;
+                height: 36px;
             }
-            .input-group label {
-                width: auto;
+            /* 手机版第一张图片也相应放大 */
+            .header-img:first-child {
+                width: 42px;
+                height: 42px;
+                margin: -3px 0;
             }
-            .range-box {
-                justify-content: space-between;
+            .stat-number {
+                font-size: 1.5rem;
+            }
+            .result-number {
+                font-size: 1.2rem;
+                padding: 6px 12px;
+                min-width: 55px;
+            }
+            .result-number.single {
+                font-size: 1.6rem;
+                padding: 10px 20px;
+            }
+            .input-field {
+                min-width: 75px;
+            }
+            .input-field input, .input-field textarea {
+                padding: 6px 8px;
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -257,223 +297,256 @@
 <body>
 <div class="card">
     <div class="header">
-        <h1>DRAW</h1>
+        <h1>
+            <img class="header-img" src="capy_coffee%201.png" alt="capybara with coffee">
+            <span>Draw</span>
+            <img class="header-img" src="capy_sleep.png" alt="capybara sleeping">
+        </h1>
+        <p>Non‑repeating · Exclude numbers · Sorted results</p>
     </div>
     <div class="content">
-        <!-- Number Range -->
         <div class="input-group">
-            <label>Number Range</label>
-            <div class="range-box">
-                <input type="number" id="minNum" value="1" step="1" min="1">
-                <span style="font-weight:bold">—</span>
-                <input type="number" id="maxNum" value="100" step="1" min="1">
+            <div class="input-field">
+                <label>Min</label>
+                <input type="number" id="minNum" value="1" step="1">
+            </div>
+            <div class="input-field">
+                <label>Max</label>
+                <input type="number" id="maxNum" value="100" step="1">
+            </div>
+            <div class="input-field">
+                <label>Draw count</label>
+                <input type="number" id="drawCount" value="1" min="1" step="1">
             </div>
         </div>
 
-        <!-- Draw Count -->
-        <div class="input-group">
-            <label>Draw Count</label>
-            <input type="number" id="drawCount" value="1" step="1" min="1">
+        <div class="input-field" style="margin-bottom: 1rem;">
+            <label>Exclude numbers (comma separated)</label>
+            <textarea id="excludeNumbers" rows="2" class="exclude-text" placeholder="e.g., 1, 13, 50"></textarea>
         </div>
 
-        <!-- Exclude Numbers -->
-        <div class="input-group">
-            <label>Exclude Numbers</label>
-            <input type="text" id="excludeNums" class="exclude-input" placeholder="e.g., 1, 13, 50">
+        <div class="checkbox-row">
+            <input type="checkbox" id="uniqueMode" checked>
+            <label>Non‑repeating mode (drawn numbers won't reappear)</label>
         </div>
 
-        <!-- No-Repeat Mode Toggle -->
-        <div class="toggle-group">
-            <span class="toggle-label">No-Repeat Mode</span>
-            <label class="switch">
-                <input type="checkbox" id="uniqueMode">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <!-- Statistics -->
-        <div class="stats" id="statsPanel">
-            <div class="stat-item">
-                <div class="stat-value" id="drawnTotal">0</div>
-                <div class="stat-label">Total Drawn</div>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number" id="drawnCount">0</div>
+                <div class="stat-label">Drawn count</div>
             </div>
-            <div class="stat-item">
-                <div class="stat-value" id="remainingCount">—</div>
+            <div class="stat">
+                <div class="stat-number" id="remainingCount">0</div>
                 <div class="stat-label">Remaining</div>
             </div>
         </div>
 
-        <!-- Draw Button -->
-        <button class="draw-btn" id="drawBtn">🎲 DRAW 🎲</button>
-
-        <!-- Result Display -->
-        <div class="result-area">
-            <div class="history-title">📌 Draw Result</div>
-            <div id="resultDisplay" class="result-numbers">Ready to draw...</div>
+        <div class="button-group">
+            <button id="drawBtn">Draw</button>
+            <button id="resetBtn" class="reset-btn">Reset</button>
         </div>
+
+        <div class="result-area">
+            <div class="draw-result" id="drawResult">
+                <span style="color:#b87c4a;">— Waiting —</span>
+            </div>
+            <div class="history-title">Drawn numbers (in order drawn)</div>
+            <div class="history-list" id="historyList">No records yet</div>
+            <div id="errorMsg" class="error-msg" style="display: none;"></div>
+        </div>
+        <footer>Adjust range, exclude numbers, reset to start over</footer>
     </div>
 </div>
 
 <script>
-    // ---------- DOM Elements ----------
+    // 抽签逻辑（完整）
+    let currentPool = [];
+    let drawnNumbers = [];
+    let lastExcludeStr = "";
+    let lastMin = 1, lastMax = 100;
+    
     const minInput = document.getElementById('minNum');
     const maxInput = document.getElementById('maxNum');
     const drawCountInput = document.getElementById('drawCount');
-    const excludeInput = document.getElementById('excludeNums');
-    const uniqueModeCheck = document.getElementById('uniqueMode');
-    const drawBtn = document.getElementById('drawBtn');
-    const drawnTotalSpan = document.getElementById('drawnTotal');
+    const excludeTextarea = document.getElementById('excludeNumbers');
+    const uniqueCheck = document.getElementById('uniqueMode');
+    const drawnCountSpan = document.getElementById('drawnCount');
     const remainingSpan = document.getElementById('remainingCount');
-    const resultDisplay = document.getElementById('resultDisplay');
-
-    // ---------- State ----------
-    let drawnNumbers = [];
-    let lastDrawResult = [];
-
-    function getExcludedSet() {
-        let raw = excludeInput.value.trim();
-        if (raw === "") return new Set();
-        let parts = raw.split(/[ ,，]+/);
-        let set = new Set();
-        for (let p of parts) {
-            let num = parseInt(p, 10);
-            if (!isNaN(num)) {
-                set.add(num);
+    const drawResultDiv = document.getElementById('drawResult');
+    const historyListDiv = document.getElementById('historyList');
+    const errorMsgDiv = document.getElementById('errorMsg');
+    const drawBtn = document.getElementById('drawBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    
+    function showError(msg) {
+        errorMsgDiv.textContent = msg;
+        errorMsgDiv.style.display = 'block';
+        setTimeout(() => {
+            errorMsgDiv.style.display = 'none';
+        }, 2800);
+    }
+    
+    function parseExcludeNumbers(str) {
+        if (!str.trim()) return [];
+        const parts = str.split(',').map(s => s.trim()).filter(s => s !== '');
+        const nums = [];
+        for (let part of parts) {
+            const num = Number(part);
+            if (!isNaN(num) && Number.isInteger(num)) {
+                nums.push(num);
             }
         }
-        return set;
+        return nums;
     }
-
-    function getValidNumbers() {
+    
+    function rebuildPool() {
         let min = parseInt(minInput.value, 10);
         let max = parseInt(maxInput.value, 10);
         if (isNaN(min)) min = 1;
         if (isNaN(max)) max = 100;
         if (min > max) { [min, max] = [max, min]; }
-        const excluded = getExcludedSet();
-        let valid = [];
-        for (let i = min; i <= max; i++) {
-            if (!excluded.has(i)) valid.push(i);
-        }
-        return { valid, min, max };
-    }
-
-    function updateStats() {
-        const uniqueMode = uniqueModeCheck.checked;
-        if (!uniqueMode) {
-            drawnTotalSpan.innerText = '—';
-            remainingSpan.innerText = '—';
-            return;
-        }
-
-        const { valid } = getValidNumbers();
-        const totalValid = valid.length;
-        const drawnCount = drawnNumbers.length;
-        const remaining = totalValid - drawnCount;
-        drawnTotalSpan.innerText = drawnCount;
-        remainingSpan.innerText = remaining >= 0 ? remaining : 0;
-    }
-
-    function resetUniqueHistory() {
-        if (uniqueModeCheck.checked) {
-            drawnNumbers = [];
-            updateStats();
-        } else {
-            drawnNumbers = [];
-            updateStats();
-        }
-    }
-
-    function bindResetEvents() {
-        const elements = [minInput, maxInput, excludeInput, uniqueModeCheck];
-        elements.forEach(el => {
-            el.addEventListener('change', () => {
-                if (uniqueModeCheck.checked) {
-                    resetUniqueHistory();
-                } else {
-                    drawnNumbers = [];
-                    updateStats();
-                }
-                resultDisplay.innerHTML = "Ready to draw...";
-                lastDrawResult = [];
-            });
-        });
-    }
-
-    function performDraw() {
-        let min = parseInt(minInput.value, 10);
-        let max = parseInt(maxInput.value, 10);
-        if (isNaN(min)) min = 1;
-        if (isNaN(max)) max = 100;
-        if (min > max) { [min, max] = [max, min]; }
+        minInput.value = min;
+        maxInput.value = max;
         
-        let k = parseInt(drawCountInput.value, 10);
-        if (isNaN(k) || k < 1) k = 1;
-
-        const excludedSet = getExcludedSet();
-        const uniqueMode = uniqueModeCheck.checked;
-
-        let pool = [];
-        for (let i = min; i <= max; i++) {
-            if (!excludedSet.has(i)) pool.push(i);
+        const excludeArr = parseExcludeNumbers(excludeTextarea.value);
+        const unique = uniqueCheck.checked;
+        
+        let fullPool = [];
+        for (let i = min; i <= max; i++) fullPool.push(i);
+        let filtered = fullPool.filter(num => !excludeArr.includes(num));
+        if (unique) {
+            filtered = filtered.filter(num => !drawnNumbers.includes(num));
         }
-
-        if (pool.length === 0) {
-            resultDisplay.innerHTML = "⚠️ No numbers available (all excluded or invalid range)";
+        currentPool = filtered;
+        updateStats();
+    }
+    
+    function updateStats() {
+        const drawnLen = drawnNumbers.length;
+        drawnCountSpan.innerText = drawnLen;
+        remainingSpan.innerText = currentPool.length;
+        
+        if (drawnNumbers.length === 0) {
+            historyListDiv.innerHTML = '<span style="color:#b87c4a;">No records yet</span>';
+        } else {
+            historyListDiv.innerHTML = drawnNumbers.map(num => `<span class="history-badge">${num}</span>`).join('');
+        }
+    }
+    
+    function displayDrawResult(resultsArray) {
+        if (!resultsArray || resultsArray.length === 0) {
+            drawResultDiv.innerHTML = '<span style="color:#b87c4a;">No numbers available</span>';
             return;
         }
-
-        if (uniqueMode) {
-            const drawnSet = new Set(drawnNumbers);
-            pool = pool.filter(num => !drawnSet.has(num));
-        }
-
-        if (k > pool.length) {
-            resultDisplay.innerHTML = `❌ Draw count (${k}) exceeds available numbers (${pool.length}). Adjust range, excludes, or draw count.`;
+        const sorted = [...resultsArray].sort((a,b) => a - b);
+        const cardsHtml = sorted.map(num => `<div class="result-number ${sorted.length === 1 ? 'single' : ''}">${num}</div>`).join('');
+        drawResultDiv.innerHTML = cardsHtml;
+    }
+    
+    function performDraw() {
+        rebuildPool();
+        let drawNum = parseInt(drawCountInput.value, 10);
+        if (isNaN(drawNum) || drawNum < 1) drawNum = 1;
+        
+        if (currentPool.length === 0) {
+            showError('No numbers available. Adjust range, exclusions, or reset.');
+            drawResultDiv.innerHTML = '<span style="color:#b87c4a;">No draws left</span>';
             return;
         }
-
-        let shuffled = [...pool];
+        
+        if (drawNum > currentPool.length) {
+            showError(`Draw count (${drawNum}) exceeds remaining (${currentPool.length}). Drawing ${currentPool.length} number(s).`);
+            drawNum = currentPool.length;
+        }
+        
+        const shuffled = [...currentPool];
         for (let i = shuffled.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
         }
-        const selected = shuffled.slice(0, k);
-        selected.sort((a,b)=>a-b);
-
-        lastDrawResult = selected;
-        if (selected.length === 1) {
-            resultDisplay.innerHTML = `🎯 ${selected[0]}`;
-        } else {
-            resultDisplay.innerHTML = `🎯 ${selected.join(' , ')}`;
+        const selected = shuffled.slice(0, drawNum);
+        
+        if (selected.length === 0) {
+            drawResultDiv.innerHTML = '<span style="color:#b87c4a;">No result</span>';
+            return;
         }
-
-        if (uniqueMode) {
-            for (let num of selected) {
-                drawnNumbers.push(num);
+        
+        const unique = uniqueCheck.checked;
+        if (unique) {
+            for (let val of selected) {
+                if (!drawnNumbers.includes(val)) {
+                    drawnNumbers.push(val);
+                }
             }
-            updateStats();
         } else {
-            updateStats();
+            for (let val of selected) {
+                drawnNumbers.push(val);
+            }
         }
+        
+        displayDrawResult(selected);
+        rebuildPool();
+        if (errorMsgDiv.style.display === 'block') errorMsgDiv.style.display = 'none';
     }
-
-    drawBtn.addEventListener('click', () => {
-        performDraw();
-    });
-
-    function init() {
-        bindResetEvents();
-        resetUniqueHistory();
-        const { valid } = getValidNumbers();
-        if (valid.length === 0) {
-            resultDisplay.innerHTML = "⚠️ No numbers available in current range (adjust excludes or range)";
-        } else {
-            resultDisplay.innerHTML = "Ready to draw...";
-        }
+    
+    function resetDraw() {
+        drawnNumbers = [];
+        rebuildPool();
+        drawResultDiv.innerHTML = '<span style="color:#b87c4a;">— Waiting —</span>';
         updateStats();
+        errorMsgDiv.style.display = 'none';
     }
-
+    
+    function onSettingsChanged() {
+        const newExclude = excludeTextarea.value;
+        const newMin = parseInt(minInput.value, 10);
+        const newMax = parseInt(maxInput.value, 10);
+        if (newMin !== lastMin || newMax !== lastMax || newExclude !== lastExcludeStr) {
+            drawnNumbers = [];
+            lastMin = newMin;
+            lastMax = newMax;
+            lastExcludeStr = newExclude;
+            rebuildPool();
+            drawResultDiv.innerHTML = '<span style="color:#b87c4a;">— Reset —</span>';
+            updateStats();
+            errorMsgDiv.style.display = 'none';
+        } else {
+            rebuildPool();
+        }
+    }
+    
+    function bindEvents() {
+        drawBtn.addEventListener('click', () => performDraw());
+        resetBtn.addEventListener('click', () => resetDraw());
+        minInput.addEventListener('input', () => {
+            drawnNumbers = [];
+            onSettingsChanged();
+        });
+        maxInput.addEventListener('input', () => {
+            drawnNumbers = [];
+            onSettingsChanged();
+        });
+        excludeTextarea.addEventListener('input', () => {
+            drawnNumbers = [];
+            onSettingsChanged();
+        });
+        uniqueCheck.addEventListener('change', () => {
+            drawnNumbers = [];
+            onSettingsChanged();
+        });
+    }
+    
+    function init() {
+        lastMin = parseInt(minInput.value,10);
+        lastMax = parseInt(maxInput.value,10);
+        lastExcludeStr = excludeTextarea.value;
+        drawnNumbers = [];
+        rebuildPool();
+        bindEvents();
+        updateStats();
+        drawResultDiv.innerHTML = '<span style="color:#b87c4a;">— Waiting —</span>';
+    }
+    
     init();
 </script>
 </body>
